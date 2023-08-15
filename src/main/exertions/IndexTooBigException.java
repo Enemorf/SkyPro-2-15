@@ -1,4 +1,4 @@
-package exceptions;
+package main.exertions;
 
 public class IndexTooBigException extends RuntimeException
 {
