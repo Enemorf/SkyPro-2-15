@@ -87,6 +87,9 @@ public class EnerloList implements StringList
         checkNullItem(item);
         String res = null;
 
+        if(!contains(item))
+            throw new ItemNotFoundException("Нет такого объекта");
+
         String[] newArray = new String[mainArray.length - 1];
         boolean checkNewElement = false;
         for (int i = 0; i < newArray.length; i++)
