@@ -8,7 +8,7 @@ public class EnerloIntList implements IntegerList
 
     public EnerloIntList ()
     {
-        mainArray = new Integer[0];
+        mainArray = new Integer[8];
     }
 
     private void checkIndex(int index)
@@ -20,16 +20,17 @@ public class EnerloIntList implements IntegerList
     @Override
     public int add(int item)
     {
-        Integer[] newArray = new Integer[mainArray.length +1];
-        for(int i =0; i < newArray.length; i++)
+
+        if(mainArray[mainArray.length-1] != null)
+            mainArray = grow(mainArray);
+
+        for(int i =0; i < mainArray.length; i++)
         {
-            if(i == mainArray.length)
+            if(mainArray[i] == null)
             {
-                newArray[i] = item;
-                mainArray = newArray;
+                mainArray[i] = item;
                 return item;
             }
-            newArray[i] = mainArray[i];
         }
         return Integer.MIN_VALUE;
     }
@@ -38,24 +39,47 @@ public class EnerloIntList implements IntegerList
     public int add(int index, int item)
     {
         checkIndex(index);
+        int tempRes;
 
-        Integer[] newArray = new Integer[mainArray.length+1];
-        boolean checkNewElement = false;
-        for(int i = 0; i < newArray.length; i++)
+        if(mainArray[mainArray.length-1] != null)
+            mainArray = grow(mainArray);
+
+
+        for(int i = 0; i < mainArray.length; i++)
         {
             if(i == index)
             {
-                newArray[i] = item;
-                checkNewElement = true;
-                continue;
+                tempRes = mainArray[i];
+                mainArray[i] = item;
+                for(int j = mainArray.length; j >=i;j--)
+                {
+                    if(i == j)
+                    {
+                        mainArray[j+1] = tempRes;
+                        break;
+                    }
+
+                    if(mainArray[j] != null)
+                        mainArray[j+1] = mainArray[j];
+                }
+                break;
             }
-            if(checkNewElement)
-                newArray[i] = mainArray[i-1];
-            else
-                newArray[i] = mainArray[i];
         }
-        mainArray = newArray;
         return item;
+    }
+    private Integer[] grow(Integer[] arr)
+    {
+        float multi = 1.5f;
+        int newSize = (int) (arr.length * multi);
+        Integer[] newArr = new Integer[newSize];
+
+        for(int i = 0; i < newArr.length; i++)
+        {
+            if(i > arr.length)
+                break;
+            newArr[i] = arr[i];
+        }
+        return newArr;
     }
 
     @Override
@@ -78,10 +102,11 @@ public class EnerloIntList implements IntegerList
     @Override
     public boolean contains (int item)
     {
-        sortSelection(mainArray);
+        //sortSelection(mainArray);
 
         int min = 0;
         int max = mainArray.length - 1;
+        quickSort(mainArray, min, max);
 
         while (min <= max) {
             int mid = (min + max) / 2;
@@ -112,6 +137,38 @@ public class EnerloIntList implements IntegerList
             arr[i] = arr[minElementIndex];
             arr[minElementIndex] = tmp;
         }
+    }
+
+    public static void quickSort(Integer[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
+        }
+    }
+
+    private static int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
+    private static void swapElements(Integer[] arr, int begin, int end)
+    {
+        int tmp = arr[begin];
+        arr[begin] = arr[end];
+        arr[end] = tmp;
     }
 
     @Override
