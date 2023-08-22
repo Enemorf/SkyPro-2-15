@@ -5,6 +5,11 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args)
     {
+        homework16();
+    }
+
+    private static void homework16()
+    {
         EnerloIntList list1 = new EnerloIntList();
         EnerloIntList list2 = new EnerloIntList();
         EnerloIntList list3 = new EnerloIntList();
